@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: var(--font-jetbrains-mono), monospace;
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+    --navbar-bg: #1B1C1D;
+    --navbar-hover: #2D2E2F;
+    --navbar-text: white;
+    --run-btn-bg: #007fbf;
+    --run-btn-hover: #0072bb;
+    --run-btn-text: white;
+    --dropdown-bg: white;
+    --dropdown-text: black;
+    --dropdown-version: #6b7280; /* gray-500 */
+    --mini-nav-bg: black;
+    --mini-box-bg: #1C1C1C;
+    --mini-box-tx: white;
+    --gutter-bg: black;
+  }
+  .light {
+    --navbar-bg: white;
+    --navbar-hover: #C7C7C7;
+    --navbar-text: black;
+    --mini-nav-bg: #dddddd;
+    --mini-box-bg: #bdbdbd;
+    --mini-box-tx: black;
+    --gutter-bg: #bdbdbd;
+  }
+}
+
+/* Gutter (Divider) Styling */
+.gutter {
+  /* background-color: #000000;  */
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Horizontal Gutter */
+.gutter-horizontal {
+  width: 2px; 
+  cursor: ew-resize; 
+}
+
+/* Vertical Gutter */
+.gutter-vertical {
+  height: 2px; 
+  cursor: ns-resize; 
+}
+
+/* Hover Effect */
+.gutter:hover {
+  background-color: #444; 
+}
+
