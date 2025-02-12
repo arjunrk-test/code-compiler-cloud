@@ -110,4 +110,16 @@ router.post("/execute/kotlin", (req, res) => {
     });
 });
 
+//Perl execution
+router.post("/execute/perl", (req, res) => {
+    const { code } = req.body;
+    if (!code) return res.status(400).json({ error: "No code provided" });
+    const command = `docker run --rm -e CODE='${escapeShellArg(code)}' perl-executor`;
+
+    exec(command, (error, stdout, stderr) => {
+        if (error) return res.status(500).json({ error: stderr || "Execution failed" });
+        res.json({ output: stdout.trim() });
+    });
+});
+
 module.exports = router;
