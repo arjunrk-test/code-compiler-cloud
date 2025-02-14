@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Check if the Python code file exists
-if [ ! -f "/home/app/script.py" ]; then
+if [ ! -f "/usr/src/app/script.py" ]; then
   echo "No Python code found!"
   exit 1
 fi

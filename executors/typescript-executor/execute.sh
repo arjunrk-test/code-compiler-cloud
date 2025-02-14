@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Check if the Typescript code file exists
-if [ ! -f "/home/app/script.ts" ]; then
+if [ ! -f "/usr/src/app/script.ts" ]; then
   echo "No Typescript code found!"
   exit 1
 fi
