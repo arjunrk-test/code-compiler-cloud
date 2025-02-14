@@ -80,7 +80,7 @@ router.post("/execute/java", (req, res) => {
     }
     const filePath = path.join(__dirname, "Main.java");
     fs.writeFileSync(filePath, code);
-    const command = `docker run --rm -v ${filePath}:/home/app/Main.java java-executor`;
+    const command = `docker run --rm -v ${filePath}:/usr/src/app/Main.java java-executor`;
 
     exec(command, (error, stdout, stderr) => {
         if (error) {
@@ -98,7 +98,7 @@ router.post("/execute/javascript", (req, res) => {
     }
     const filePath = path.join(__dirname, "script.js");
     fs.writeFileSync(filePath, code);
-    const command = `docker run --rm -v ${filePath}:/home/app/script.js javascript-executor`;
+    const command = `docker run --rm -v ${filePath}:/usr/src/app/script.js javascript-executor`;
     exec(command, (error, stdout, stderr) => {
         if (stderr) {
             return res.status(400).send(stderr.trim()); 
@@ -154,7 +154,7 @@ router.post("/execute/python", (req, res) => {
     }
     const filePath = path.join(__dirname, "script.py");
     fs.writeFileSync(filePath, code);
-    const command = `docker run --rm -v ${filePath}:/home/app/script.py python-executor`;
+    const command = `docker run --rm -v ${filePath}:/usr/src/app/script.py python-executor`;
     exec(command, (error, stdout, stderr) => {
         if (error) {
             return res.status(400).send(stderr || "Syntax error in the code.");
@@ -202,7 +202,7 @@ router.post("/execute/swift", (req, res) => {
     }
     const filePath = path.join(__dirname, "main.swift");
     fs.writeFileSync(filePath, code);
-    const command = `docker run --rm -v ${filePath}:/home/app/main.swift swift-executor`;
+    const command = `docker run --rm -v ${filePath}:/usr/src/app/main.swift swift-executor`;
     exec(command, (error, stdout, stderr) => {
         if (stderr) {
             return res.status(400).send(stderr.trim()); 
@@ -222,7 +222,7 @@ router.post("/execute/typescript", (req, res) => {
     }
     const filePath = path.join(__dirname, "script.ts");
     fs.writeFileSync(filePath, code);
-    const command = `docker run --rm -v ${filePath}:/home/app/script.ts typescript-executor`;
+    const command = `docker run --rm -v ${filePath}:/usr/src/app/script.ts typescript-executor`;
     exec(command, (error, stdout, stderr) => {
         if (stderr) {
             return res.status(400).send(stderr.trim()); 

@@ -2,13 +2,13 @@
 FROM python:3.11
 
 # Set working directory
-WORKDIR /home/app
+WORKDIR /usr/src/app
 
 # Copy the execution script
-COPY execute.sh /home/app/execute.sh
+COPY execute.sh /usr/src/app/execute.sh
 
 # Install dependencies
-RUN chmod +x /home/app/execute.sh
+RUN chmod +x /usr/src/app/execute.sh
 
 # Set entrypoint
-ENTRYPOINT ["/home/app/execute.sh"]
+ENTRYPOINT ["/usr/src/app/execute.sh"]

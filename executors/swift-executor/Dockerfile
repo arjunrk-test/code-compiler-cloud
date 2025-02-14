@@ -2,13 +2,13 @@
 FROM swift:latest
 
 # Set working directory
-WORKDIR /home/app
+WORKDIR /usr/src/app
 
 # Copy the execution script
-COPY execute.sh /home/app/execute.sh
+COPY execute.sh /usr/src/app/execute.sh
 
 # Give execute.sh permission to run
-RUN chmod +x /home/app/execute.sh
+RUN chmod +x /usr/src/app/execute.sh
 
 # Set entrypoint
-ENTRYPOINT ["/home/app/execute.sh"]
+ENTRYPOINT ["/usr/src/app/execute.sh"]

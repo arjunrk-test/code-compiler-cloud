@@ -2,13 +2,13 @@
 FROM openjdk:17-slim
 
 # Set the working directory inside the container
-WORKDIR /home/app
+WORKDIR /usr/src/app/
 
 # Copy the script that will compile and execute Java code
-COPY execute.sh /home/app/execute.sh
+COPY execute.sh /usr/src/app/execute.sh
 
 # Give execute permissions to the script
-RUN chmod +x /home/app/execute.sh
+RUN chmod +x /usr/src/app/execute.sh
 
 # Default command to execute the script
-CMD ["/home/app/execute.sh"]
+CMD ["/usr/src/app/execute.sh"]
