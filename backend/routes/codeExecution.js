@@ -101,7 +101,7 @@ router.post("/execute/javascript", (req, res) => {
     const command = `docker run --rm -v ${filePath}:/home/app/script.js javascript-executor`;
     exec(command, (error, stdout, stderr) => {
         if (stderr) {
-            return res.status(400).send(stderr.trim()); // Return actual syntax error
+            return res.status(400).send(stderr.trim()); 
         }
         if (error) {
             return res.status(400).send(error.message || "Syntax error in the code.");
@@ -150,15 +150,16 @@ router.post("/execute/php", (req, res) => {
 router.post("/execute/python", (req, res) => {
     const { code } = req.body;
     if (!code) {
-        return res.status(400).json({ error: "No code provided" });
+        return res.status(400).send("No code provided");
     }
-    const command = `docker run --rm -e CODE='${escapeShellArg(code)}' python-executor`;
-
+    const filePath = path.join(__dirname, "script.py");
+    fs.writeFileSync(filePath, code);
+    const command = `docker run --rm -v ${filePath}:/home/app/script.py python-executor`;
     exec(command, (error, stdout, stderr) => {
         if (error) {
-            return res.status(500).json({ error: stderr || "Execution failed" });
+            return res.status(400).send(stderr || "Syntax error in the code.");
         }
-        res.json({ output: stdout.trim() });
+        res.send(stdout.trim());
     });
 });
 
