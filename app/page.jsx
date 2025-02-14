@@ -34,22 +34,24 @@ export default function Home() {
 
   const handleRunCode = async () => {
     try {
-      const response = await axios.post('http://localhost:3001/api/run-code', {
-        language: selectedLanguage,
-        version: Language_Versions[selectedLanguage],
-        code: code,
-        stdin: inputText,
-      });
-      const errorMessage = response.data.run?.stderr || response.data.stderr || response.data.compile?.stderr;
-      if(errorMessage){
-        setOutput("Error: \n" + errorMessage);
-      }else{
-        setOutput(response.data.run.stdout || "No output");
-      }
+        const response = await axios.post(`http://localhost:20000/api/execute/${selectedLanguage}`, {
+            language: selectedLanguage,
+            code: code,
+            stdin: inputText,
+        });
+
+        if (response.data) {
+            setOutput(response.data);
+            setOutput("No output received.");
+        }
     } catch (error) {
-      setOutput("Execution error: " + (error.response?.data?.error || error.message || "Unknown error"));
+        if (error.response && error.response.data) {
+            setOutput(error.response.data);
+        } else {
+            setOutput("Execution error: " + (error.message || "Unknown error"));
+        }
     }
-  };
+};
 
   return (
     <>
