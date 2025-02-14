@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Check if the Java code file exists
-if [ ! -f "/home/app/Main.java" ]; then
+if [ ! -f "/usr/src/app/Main.java" ]; then
   echo "No Java code found!"
   exit 1
 fi
