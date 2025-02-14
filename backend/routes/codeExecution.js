@@ -1,6 +1,8 @@
 const express = require("express");
 const { exec } = require("child_process");
 const router = express.Router();
+const fs = require("fs");
+const path = require("path");
 
 function escapeShellArg(code) {
     return code.replace(/'/g, "'\\''"); // Escape single quotes
@@ -73,16 +75,19 @@ router.post("/execute/csharp", (req, res) => {
 //Java Execution
 router.post("/execute/java", (req, res) => {
     const { code } = req.body;
+
     if (!code) {
-        return res.status(400).json({ error: "No code provided" });
+        return res.status(400).send("No code provided");
     }
-    const command = `docker run --rm -e CODE='${code}' java-executor`;
+    const filePath = path.join(__dirname, "Main.java");
+    fs.writeFileSync(filePath, code);
+    const command = `docker run --rm -v ${filePath}:/home/app/Main.java java-executor`;
 
     exec(command, (error, stdout, stderr) => {
         if (error) {
-            return res.status(500).json({ error: stderr || "Execution failed" });
+            return res.status(400).send(stderr || "Syntax error in the code.");
         }
-        res.json({ output: stdout.trim() });
+        res.send(stdout.trim());
     });
 });
 
