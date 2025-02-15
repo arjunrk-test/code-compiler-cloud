@@ -120,12 +120,17 @@ router.post("/execute/javascript", (req, res) => {
 //Kotlin execution
 router.post("/execute/kotlin", (req, res) => {
     const { code } = req.body;
-    if (!code) return res.status(400).json({ error: "No code provided" });
-    const command = `docker run --rm -e CODE='${escapeShellArg(code)}' kotlin-executor`;
-
+    if (!code) {
+        return res.status(400).send("No code provided");
+    }
+    const filePath = path.join(__dirname, "Main.kt");
+    fs.writeFileSync(filePath, code);
+    const command = `docker run --rm -v ${filePath}:/usr/src/app/Main.kt kotlin-executor`;
     exec(command, (error, stdout, stderr) => {
-        if (error) return res.status(500).json({ error: stderr || "Execution failed" });
-        res.json({ output: stdout.trim() });
+        if (stderr) {
+            return res.send(stderr.trim());
+        }
+        res.send(stdout.trim());
     });
 });
 
