@@ -12,17 +12,19 @@ function escapeShellArg(code) {
 router.post("/execute/bash", (req, res) => {
     const { code } = req.body;
     if (!code) {
-        return res.status(400).json({ error: "No code provided" });
+        return res.status(400).send("No code provided");
     }
-    const command = `docker run --rm -e CODE='${code}' bash-executor`;
-
+    const filePath = path.join(__dirname, "script.sh");
+    fs.writeFileSync(filePath, code);
+    const command = `docker run --rm -v ${filePath}:/usr/src/app/script.sh bash-executor`;
     exec(command, (error, stdout, stderr) => {
-        if (error) {
-            return res.status(500).json({ error: stderr || "Execution failed" });
+        if (stderr) {
+            return res.status(400).send(stderr.trim());
         }
-        res.json({ output: stdout.trim() });
+        res.send(stdout.trim());
     });
 });
+
 
 //C execution
 router.post("/execute/c", (req, res) => {
@@ -173,8 +175,11 @@ router.post("/execute/python", (req, res) => {
     fs.writeFileSync(filePath, code);
     const command = `docker run --rm -v ${filePath}:/usr/src/app/script.py python-executor`;
     exec(command, (error, stdout, stderr) => {
+        if (stderr) {
+            return res.status(400).send(stderr.trim()); 
+        }
         if (error) {
-            return res.status(400).send(stderr || "Syntax error in the code.");
+            return res.status(400).send(error.message || "Syntax error in the code.");
         }
         res.send(stdout.trim());
     });
