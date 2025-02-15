@@ -1,11 +1,21 @@
-#!/bin/sh
+#!/bin/bash
 
-# Ensure the script stops on error
-set -e
-echo "$CODE" > Main.kt
+# Check if the Kotlin source file exists
+if [ ! -f "/usr/src/app/Main.kt" ]; then
+  echo "No Kotlin code found!"
+  exit 1
+fi
 
-# Compile Kotlin code to a JAR file with a manifest specifying the entry point
-kotlinc Main.kt -include-runtime -d Main.jar || { echo "Compilation failed"; exit 1; }
+# Compile the Kotlin code
+kotlinc Main.kt -include-runtime -d Main.jar 2> error.txt
+if [ $? -ne 0 ]; then
+  cat error.txt  # Print compilation errors
+  exit 1
+fi
 
-# Run the JAR file
-java -jar Main.jar
+# Run the compiled Kotlin program
+java -jar Main.jar 2> runtime_error.txt
+if [ $? -ne 0 ]; then
+  cat runtime_error.txt  # Print runtime errors
+  exit 1
+fi
