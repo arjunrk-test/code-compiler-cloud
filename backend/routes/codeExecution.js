@@ -167,16 +167,22 @@ router.post("/execute/python", (req, res) => {
 router.post("/execute/ruby", (req, res) => {
     const { code } = req.body;
     if (!code) {
-        return res.status(400).json({ error: "No code provided" });
+        return res.status(400).send("No code provided");
     }
-    const command = `docker run --rm -e CODE='${escapeShellArg(code)}' ruby-executor`;
+    const filePath = path.join(__dirname, "script.rb");
+    fs.writeFileSync(filePath, code);
+    const command = `docker run --rm -v ${filePath}:/usr/src/app/script.rb ruby-executor`;
     exec(command, (error, stdout, stderr) => {
-        if (error) {
-            return res.status(500).json({ error: stderr || "Execution failed" });
+        if (stderr) {
+            return res.status(400).send(stderr.trim()); 
         }
-        res.json({ output: stdout.trim() });
+        if (error) {
+            return res.status(400).send(error.message || "Syntax error in the code.");
+        }
+        res.send(stdout.trim());
     });
 });
+
 
 // Rust execution
 router.post("/execute/rust", (req, res) => {
