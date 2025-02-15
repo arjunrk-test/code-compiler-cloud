@@ -12,17 +12,19 @@ function escapeShellArg(code) {
 router.post("/execute/bash", (req, res) => {
     const { code } = req.body;
     if (!code) {
-        return res.status(400).json({ error: "No code provided" });
+        return res.status(400).send("No code provided");
     }
-    const command = `docker run --rm -e CODE='${code}' bash-executor`;
-
+    const filePath = path.join(__dirname, "script.sh");
+    fs.writeFileSync(filePath, code);
+    const command = `docker run --rm -v ${filePath}:/usr/src/app/script.sh bash-executor`;
     exec(command, (error, stdout, stderr) => {
-        if (error) {
-            return res.status(500).json({ error: stderr || "Execution failed" });
+        if (stderr) {
+            return res.status(400).send(stderr.trim());
         }
-        res.json({ output: stdout.trim() });
+        res.send(stdout.trim());
     });
 });
+
 
 //C execution
 router.post("/execute/c", (req, res) => {
@@ -125,24 +127,41 @@ router.post("/execute/kotlin", (req, res) => {
 //Perl execution
 router.post("/execute/perl", (req, res) => {
     const { code } = req.body;
-    if (!code) return res.status(400).json({ error: "No code provided" });
-    const command = `docker run --rm -e CODE='${escapeShellArg(code)}' perl-executor`;
-
+    if (!code) {
+        return res.status(400).send("No code provided");
+    }
+    const filePath = path.join(__dirname, "script.pl");
+    fs.writeFileSync(filePath, code);
+    const command = `docker run --rm -v ${filePath}:/usr/src/app/script.pl perl-executor`;
     exec(command, (error, stdout, stderr) => {
-        if (error) return res.status(500).json({ error: stderr || "Execution failed" });
-        res.json({ output: stdout.trim() });
+        if (stderr) {
+            return res.status(400).send(stderr.trim()); 
+        }
+        if (error) {
+            return res.status(400).send(error.message || "Syntax error in the code.");
+        }
+        res.send(stdout.trim());
     });
 });
+
 
 //PHP execution
 router.post("/execute/php", (req, res) => {
     const { code } = req.body;
-    if (!code) return res.status(400).json({ error: "No code provided" });
-    const command = `docker run --rm -e CODE='${escapeShellArg(code)}' php-executor`;
-
+    if (!code) {
+        return res.status(400).send("No code provided");
+    }
+    const filePath = path.join(__dirname, "script.php");
+    fs.writeFileSync(filePath, code);
+    const command = `docker run --rm -v ${filePath}:/usr/src/app/script.php php-executor`;
     exec(command, (error, stdout, stderr) => {
-        if (error) return res.status(500).json({ error: stderr || "Execution failed" });
-        res.json({ output: stdout.trim() });
+        if (stderr) {
+            return res.status(400).send(stderr.trim()); 
+        }
+        if (error) {
+            return res.status(400).send(error.message || "Syntax error in the code.");
+        }
+        res.send(stdout.trim());
     });
 });
 
@@ -156,8 +175,11 @@ router.post("/execute/python", (req, res) => {
     fs.writeFileSync(filePath, code);
     const command = `docker run --rm -v ${filePath}:/usr/src/app/script.py python-executor`;
     exec(command, (error, stdout, stderr) => {
+        if (stderr) {
+            return res.status(400).send(stderr.trim()); 
+        }
         if (error) {
-            return res.status(400).send(stderr || "Syntax error in the code.");
+            return res.status(400).send(error.message || "Syntax error in the code.");
         }
         res.send(stdout.trim());
     });
@@ -167,16 +189,22 @@ router.post("/execute/python", (req, res) => {
 router.post("/execute/ruby", (req, res) => {
     const { code } = req.body;
     if (!code) {
-        return res.status(400).json({ error: "No code provided" });
+        return res.status(400).send("No code provided");
     }
-    const command = `docker run --rm -e CODE='${escapeShellArg(code)}' ruby-executor`;
+    const filePath = path.join(__dirname, "script.rb");
+    fs.writeFileSync(filePath, code);
+    const command = `docker run --rm -v ${filePath}:/usr/src/app/script.rb ruby-executor`;
     exec(command, (error, stdout, stderr) => {
-        if (error) {
-            return res.status(500).json({ error: stderr || "Execution failed" });
+        if (stderr) {
+            return res.status(400).send(stderr.trim()); 
         }
-        res.json({ output: stdout.trim() });
+        if (error) {
+            return res.status(400).send(error.message || "Syntax error in the code.");
+        }
+        res.send(stdout.trim());
     });
 });
+
 
 // Rust execution
 router.post("/execute/rust", (req, res) => {
