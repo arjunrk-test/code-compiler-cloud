@@ -30,17 +30,19 @@ router.post("/execute/bash", (req, res) => {
 router.post("/execute/c", (req, res) => {
     const { code } = req.body;
     if (!code) {
-        return res.status(400).json({ error: "No code provided" });
+        return res.status(400).send("No code provided");
     }
-    const command = `docker run --rm -e CODE='${code}' c-executor`;
-
+    const filePath = path.join(__dirname, "main.c");
+    fs.writeFileSync(filePath, code);
+    const command = `docker run --rm -v ${filePath}:/usr/src/app/main.c c-executor`;
     exec(command, (error, stdout, stderr) => {
-        if (error) {
-            return res.status(500).json({ error: stderr || "Execution failed" });
+        if (stderr) {
+            return res.send(stderr.trim());
         }
-        res.json({ output: stdout.trim() });
+        res.send(stdout.trim());
     });
 });
+
 
 //C++ execution
 router.post("/execute/cpp", (req, res) => {
