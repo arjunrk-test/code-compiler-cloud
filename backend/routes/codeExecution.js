@@ -4,10 +4,6 @@ const router = express.Router();
 const fs = require("fs");
 const path = require("path");
 
-function escapeShellArg(code) {
-    return code.replace(/'/g, "'\\''"); // Escape single quotes
-}
-
 // Bash Execution
 router.post("/execute/bash", (req, res) => {
     const { code } = req.body;
@@ -37,7 +33,7 @@ router.post("/execute/c", (req, res) => {
     const command = `docker run --rm -v ${filePath}:/usr/src/app/main.c c-executor`;
     exec(command, (error, stdout, stderr) => {
         if (stderr) {
-            return res.send(stderr.trim());
+            return res.status(400).send(stderr.trim());
         }
         res.send(stdout.trim());
     });
@@ -55,7 +51,7 @@ router.post("/execute/cpp", (req, res) => {
     const command = `docker run --rm -v ${filePath}:/usr/src/app/main.cpp cpp-executor`;
     exec(command, (error, stdout, stderr) => {
         if (stderr) {
-            return res.send(stderr.trim());
+            return res.status(400).send(stderr.trim());
         }
         res.send(stdout.trim());
     });
@@ -73,7 +69,7 @@ router.post("/execute/csharp", (req, res) => {
     const command = `docker run --rm -v ${filePath}:/usr/src/app/Test.cs csharp-executor`;
     exec(command, (error, stdout, stderr) => {
         if (stderr) {
-            return res.send(stderr.trim());
+            return res.status(400).send(stderr.trim());
         }
         res.send(stdout.trim());
     });
@@ -90,8 +86,8 @@ router.post("/execute/java", (req, res) => {
     const command = `docker run --rm -v ${filePath}:/usr/src/app/Main.java java-executor`;
 
     exec(command, (error, stdout, stderr) => {
-        if (error) {
-            return res.status(400).send(stderr || "Syntax error in the code.");
+        if (stderr) {
+            return res.status(400).send(stderr.trim());
         }
         res.send(stdout.trim());
     });
@@ -109,9 +105,6 @@ router.post("/execute/javascript", (req, res) => {
     exec(command, (error, stdout, stderr) => {
         if (stderr) {
             return res.status(400).send(stderr.trim()); 
-        }
-        if (error) {
-            return res.status(400).send(error.message || "Syntax error in the code.");
         }
         res.send(stdout.trim());
     });
@@ -147,9 +140,6 @@ router.post("/execute/perl", (req, res) => {
         if (stderr) {
             return res.status(400).send(stderr.trim()); 
         }
-        if (error) {
-            return res.status(400).send(error.message || "Syntax error in the code.");
-        }
         res.send(stdout.trim());
     });
 });
@@ -168,9 +158,6 @@ router.post("/execute/php", (req, res) => {
         if (stderr) {
             return res.status(400).send(stderr.trim()); 
         }
-        if (error) {
-            return res.status(400).send(error.message || "Syntax error in the code.");
-        }
         res.send(stdout.trim());
     });
 });
@@ -187,9 +174,6 @@ router.post("/execute/python", (req, res) => {
     exec(command, (error, stdout, stderr) => {
         if (stderr) {
             return res.status(400).send(stderr.trim()); 
-        }
-        if (error) {
-            return res.status(400).send(error.message || "Syntax error in the code.");
         }
         res.send(stdout.trim());
     });
@@ -208,9 +192,6 @@ router.post("/execute/ruby", (req, res) => {
         if (stderr) {
             return res.status(400).send(stderr.trim()); 
         }
-        if (error) {
-            return res.status(400).send(error.message || "Syntax error in the code.");
-        }
         res.send(stdout.trim());
     });
 });
@@ -227,7 +208,7 @@ router.post("/execute/rust", (req, res) => {
     const command = `docker run --rm -v ${filePath}:/usr/src/app/main.rs rust-executor`;
     exec(command, (error, stdout, stderr) => {
         if (stderr) {
-            return res.send(stderr.trim());
+            return res.status(400).send(stderr.trim());
         }
         res.send(stdout.trim());
     });
@@ -246,9 +227,6 @@ router.post("/execute/swift", (req, res) => {
         if (stderr) {
             return res.status(400).send(stderr.trim()); 
         }
-        if (error) {
-            return res.status(400).send(error.message || "Syntax error in the code.");
-        }
         res.send(stdout.trim());
     });
 });
@@ -265,9 +243,6 @@ router.post("/execute/typescript", (req, res) => {
     exec(command, (error, stdout, stderr) => {
         if (stderr) {
             return res.status(400).send(stderr.trim()); 
-        }
-        if (error) {
-            return res.status(400).send(error.message || "Syntax error in the code.");
         }
         res.send(stdout.trim());
     });
