@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Create a Bash file inside the container 
+echo -e "$CODE" | base64 -d > /usr/src/app/script.sh
+
+# Create input file inside the container (only if input is provided)
+if [ ! -z "$INPUT" ]; then
+    echo -e "$INPUT" | base64 -d > /usr/src/app/input.txt
+fi
+
 # Check if the Bash script exists
 if [ ! -f "/usr/src/app/script.sh" ]; then
   echo "No Bash script found!"
@@ -10,14 +18,14 @@ fi
 chmod +x /usr/src/app/script.sh
 
 # Run the script, capturing both stdout and stderr
-/bin/bash -n /usr/src/app/script.sh 2> syntax_error.txt
+if [ -f "/usr/src/app/input.txt" ]; then
+    bash /usr/src/app/script.sh < /usr/src/app/input.txt 2>&1 | tee runtime_error.txt
+else
+    bash /usr/src/app/script.sh 2>&1 | tee runtime_error.txt
+fi
+
 if [ $? -ne 0 ]; then
   cat syntax_error.txt
   exit 1
 fi
 
-/bin/bash /usr/src/app/script.sh 2> runtime_error.txt
-if [ $? -ne 0 ]; then
-  cat runtime_error.txt
-  exit 1
-fi
