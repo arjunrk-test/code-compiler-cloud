@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Create Java file inside the container
-echo -e "$CODE" > /usr/src/app/Main.java
+echo -e "$CODE" | base64 --decode > /usr/src/app/Main.java
 
 # Create input file inside the container (only if input is provided)
 if [ ! -z "$INPUT" ]; then
-    echo -e "$INPUT" > /usr/src/app/input.txt
+    echo -e "$INPUT" | base64 --decode > /usr/src/app/input.txt
 fi
 
 # Check if Java file was successfully written

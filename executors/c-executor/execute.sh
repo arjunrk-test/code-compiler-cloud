@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Create C file inside the container
+echo -e "$CODE" | base64 --decode > /usr/src/app/main.c
+
+# Create input file inside the container (only if input is provided)
+if [ ! -z "$INPUT" ]; then
+    echo -e "$INPUT" | base64 --decode > /usr/src/app/input.txt
+fi
+
 # Check if the C file exists
 if [ ! -f "/usr/src/app/main.c" ]; then
   echo "No C code found!"
@@ -13,9 +21,14 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Execute the compiled program
-/usr/src/app/main 2> runtime_error.txt
+# Run C program with or without input redirection
+if [ -f "/usr/src/app/input.txt" ]; then
+    /usr/src/app/main < /usr/src/app/input.txt 2>&1 | tee runtime_error.txt
+else
+    /usr/src/app/main 2>&1 | tee runtime_error.txt
+fi
+
 if [ $? -ne 0 ]; then
-  cat runtime_error.txt  # Output runtime errors
-  exit 1
+    cat runtime_error.txt
+    exit 1
 fi
