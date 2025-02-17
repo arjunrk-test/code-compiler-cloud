@@ -43,8 +43,8 @@ export default function Home() {
         if (response.data) {
             setOutput(response.data);
         }else {
-          setOutput("No output received.");
-      }
+            setOutput("No output received.");
+        }
     } catch (error) {
         if (error.response && error.response.data) {
             setOutput(error.response.data);
