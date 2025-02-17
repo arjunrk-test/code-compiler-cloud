@@ -1,8 +1,6 @@
 const express = require("express");
 const { exec } = require("child_process");
 const router = express.Router();
-const fs = require("fs");
-const path = require("path");
 
 const languages = {
     bash: { filename: "script.sh", executor: "bash-executor" },
@@ -25,24 +23,15 @@ const executeCode = (language, code, stdin, res) => {
     if (!code) {
         return res.status(400).send("No code provided");
     }
-    
+
     const langConfig = languages[language];
     if (!langConfig) {
         return res.status(400).send("Unsupported language");
     }
 
-    const codeFilePath = path.join(__dirname, langConfig.filename);
-    const inputFilePath = path.join(__dirname, "input.txt");
-
-    fs.writeFileSync(codeFilePath, code);
-
-    if (stdin) {
-        fs.writeFileSync(inputFilePath, stdin);
-    }
-
     const command = stdin
-        ? `docker run --rm -v ${codeFilePath}:/usr/src/app/${langConfig.filename} -v ${inputFilePath}:/usr/src/app/input.txt ${langConfig.executor}`
-        : `docker run --rm -v ${codeFilePath}:/usr/src/app/${langConfig.filename} ${langConfig.executor}`;
+        ? `docker run --rm -i -e CODE=${JSON.stringify(code)} -e INPUT=${JSON.stringify(stdin)} ${langConfig.executor}`
+        : `docker run --rm -i -e CODE=${JSON.stringify(code)} ${langConfig.executor}`;
 
     exec(command, (error, stdout, stderr) => {
         if (stderr) {
@@ -57,6 +46,5 @@ Object.keys(languages).forEach((language) => {
         executeCode(language, req.body.code, req.body.stdin, res);
     });
 });
-
 
 module.exports = router;
