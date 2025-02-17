@@ -30,7 +30,7 @@ export const Code_Snippets = {
    python: `def greet(name):\n\tprint(f"Hello, {name}!")\n\ngreet("Arjun")\n`,
    ruby: `def greet(name)\n\tputs "Hello, #{name}!"\nend\n\ngreet("Arjun")\n`,
    rust: `fn greet(name: &str) {\n\tprintln!("Hello, {}!", name);\n}\n\nfn main() {\n\tgreet("Arjun");\n}\n`,
-   swift: `func greet(name: String) {\n\tprint("Hello, \(name)!")\n}\n\ngreet(name: "Arjun")\n`,
+   swift: `func greet(name: String) {\n\tprint("Hello, \\(name)!")\n}\n\ngreet(name: "Arjun")\n`,
    typescript: `function greet(name: string): void {\n\tconsole.log("Hello, " + name + "!");\n}\n\ngreet("Arjun");\n`,
  };
  

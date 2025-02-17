@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Create a Kotlin file inside the container 
+echo -e "$CODE" | base64 --decode > /usr/src/app/Main.kt
+
+# Create input file inside the container (only if input is provided)
+if [ ! -z "$INPUT" ]; then
+    echo -e "$INPUT" | base64 --decode > /usr/src/app/input.txt
+fi
+
 # Check if the Kotlin source file exists
 if [ ! -f "/usr/src/app/Main.kt" ]; then
   echo "No Kotlin code found!"
@@ -14,7 +22,12 @@ if [ $? -ne 0 ]; then
 fi
 
 # Run the compiled Kotlin program
-java -jar Main.jar 2> runtime_error.txt
+if [ -f "/usr/src/app/input.txt" ]; then
+    java -jar Main.jar < /usr/src/app/input.txt 2>&1 | tee runtime_error.txt
+else
+    java -jar Main.jar 2>&1 | tee runtime_error.txt
+fi
+
 if [ $? -ne 0 ]; then
   cat runtime_error.txt  # Print runtime errors
   exit 1

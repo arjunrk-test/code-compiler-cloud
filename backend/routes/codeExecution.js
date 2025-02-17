@@ -20,6 +20,9 @@ const languages = {
 };
 
 const executeCode = (language, code, stdin, res) => {
+    const encodedCode = Buffer.from(code).toString('base64');
+    const encodedInput = stdin ? Buffer.from(stdin).toString('base64') : null;
+
     if (!code) {
         return res.status(400).send("No code provided");
     }
@@ -30,8 +33,8 @@ const executeCode = (language, code, stdin, res) => {
     }
 
     const command = stdin
-        ? `docker run --rm -i -e CODE=${JSON.stringify(code)} -e INPUT=${JSON.stringify(stdin)} ${langConfig.executor}`
-        : `docker run --rm -i -e CODE=${JSON.stringify(code)} ${langConfig.executor}`;
+        ? `docker run --rm -i -e CODE=${encodedCode} -e INPUT=${encodedInput} ${langConfig.executor}`
+        : `docker run --rm -i -e CODE=${encodedCode} ${langConfig.executor}`;
 
     exec(command, (error, stdout, stderr) => {
         if (stderr) {
