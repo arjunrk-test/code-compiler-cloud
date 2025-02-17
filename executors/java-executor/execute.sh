@@ -1,21 +1,26 @@
 #!/bin/bash
 
-# Check if the Java code file exists
+# Check if Java code exists
 if [ ! -f "/usr/src/app/Main.java" ]; then
   echo "No Java code found!"
   exit 1
 fi
 
-# Compile Java code and capture errors
+# Compile Java code
 javac Main.java 2>&1 | tee error.txt
 if [ $? -ne 0 ]; then
-  cat error.txt  # Print errors directly
+  cat error.txt
   exit 1
 fi
 
-# Run Java program and capture runtime errors
-java Main 2>&1 | tee runtime_error.txt
+# Run Java program with input redirection if input.txt exists
+if [ -f "/usr/src/app/input.txt" ]; then
+  java Main < /usr/src/app/input.txt 2>&1 | tee runtime_error.txt
+else
+  java Main 2>&1 | tee runtime_error.txt
+fi
+
 if [ $? -ne 0 ]; then
-  cat runtime_error.txt  # Print runtime errors directly
+  cat runtime_error.txt
   exit 1
 fi

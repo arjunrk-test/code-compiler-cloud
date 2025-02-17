@@ -21,7 +21,7 @@ const languages = {
     typescript: { filename: "script.ts", executor: "typescript-executor" }
 };
 
-const executeCode = (language, code, res) => {
+const executeCode = (language, code, stdin, res) => {
     if (!code) {
         return res.status(400).send("No code provided");
     }
@@ -31,10 +31,19 @@ const executeCode = (language, code, res) => {
         return res.status(400).send("Unsupported language");
     }
 
-    const filePath = path.join(__dirname, langConfig.filename);
-    fs.writeFileSync(filePath, code);
-    
-    const command = `docker run --rm -v ${filePath}:/usr/src/app/${langConfig.filename} ${langConfig.executor}`;
+    const codeFilePath = path.join(__dirname, langConfig.filename);
+    const inputFilePath = path.join(__dirname, "input.txt");
+
+    fs.writeFileSync(codeFilePath, code);
+
+    if (stdin) {
+        fs.writeFileSync(inputFilePath, stdin);
+    }
+
+    const command = stdin
+        ? `docker run --rm -v ${codeFilePath}:/usr/src/app/${langConfig.filename} -v ${inputFilePath}:/usr/src/app/input.txt ${langConfig.executor}`
+        : `docker run --rm -v ${codeFilePath}:/usr/src/app/${langConfig.filename} ${langConfig.executor}`;
+
     exec(command, (error, stdout, stderr) => {
         if (stderr) {
             return res.status(400).send(stderr.trim());
@@ -45,8 +54,9 @@ const executeCode = (language, code, res) => {
 
 Object.keys(languages).forEach((language) => {
     router.post(`/execute/${language}`, (req, res) => {
-        executeCode(language, req.body.code, res);
+        executeCode(language, req.body.code, req.body.stdin, res);
     });
 });
+
 
 module.exports = router;
