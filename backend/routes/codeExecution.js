@@ -4,8 +4,8 @@ const router = express.Router();
 
 const languages = {
     bash: { filename: "script.sh", executor: "bash-executor" },
-    c: { filename: "main.c", executor: "c-executor" },
-    cpp: { filename: "main.cpp", executor: "cpp-executor" },
+    c: { filename: "main.c", executor: "ccc-executor" },
+    cpp: { filename: "main.cpp", executor: "ccc-executor" },
     csharp: { filename: "Test.cs", executor: "csharp-executor" },
     java: { filename: "Main.java", executor: "java-executor" },
     javascript: { filename: "script.js", executor: "jsts-executor" },
