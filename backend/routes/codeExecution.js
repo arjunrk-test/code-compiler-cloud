@@ -4,19 +4,19 @@ const router = express.Router();
 
 const languages = {
     bash: { filename: "script.sh", executor: "bash-executor" },
-    c: { filename: "main.c", executor: "c-executor" },
-    cpp: { filename: "main.cpp", executor: "cpp-executor" },
+    c: { filename: "main.c", executor: "common-executor" },
+    cpp: { filename: "main.cpp", executor: "common-executor" },
     csharp: { filename: "Test.cs", executor: "csharp-executor" },
     java: { filename: "Main.java", executor: "java-executor" },
-    javascript: { filename: "script.js", executor: "jsts-executor" },
+    javascript: { filename: "script.js", executor: "common-executor" },
     kotlin: { filename: "Main.kt", executor: "kotlin-executor" },
-    perl: { filename: "script.pl", executor: "pppr-executor" },
-    php: { filename: "script.php", executor: "pppr-executor" },
-    python: { filename: "script.py", executor: "pppr-executor" },
-    ruby: { filename: "script.rb", executor: "pppr-executor" },
+    perl: { filename: "script.pl", executor: "common-executor" },
+    php: { filename: "script.php", executor: "common-executor" },
+    python: { filename: "script.py", executor: "common-executor" },
+    ruby: { filename: "script.rb", executor: "common-executor" },
     rust: { filename: "main.rs", executor: "rust-executor" },
     swift: { filename: "main.swift", executor: "swift-executor" },
-    typescript: { filename: "script.ts", executor: "jsts-executor" }
+    typescript: { filename: "script.ts", executor: "common-executor" }
 };
 
 const executeCode = (language, code, stdin, res) => {
