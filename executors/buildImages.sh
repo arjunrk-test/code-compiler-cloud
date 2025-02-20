@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # List of all executors
-executors=("bash" "c" "cpp" "csharp" "java" "javascript" "kotlin" "perl" "php" "python" "ruby" "rust" "swift" "typescript")
+executors=("bash" "common" "csharp" "java" "kotlin" "rust" "swift")
 
 # Create a log file for failed builds
 failed_builds=()
