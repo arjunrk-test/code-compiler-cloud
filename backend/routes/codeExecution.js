@@ -8,7 +8,7 @@ const languages = {
     cpp: { filename: "main.cpp", executor: "cpp-executor" },
     csharp: { filename: "Test.cs", executor: "csharp-executor" },
     java: { filename: "Main.java", executor: "java-executor" },
-    javascript: { filename: "script.js", executor: "javascript-executor" },
+    javascript: { filename: "script.js", executor: "jsts-executor" },
     kotlin: { filename: "Main.kt", executor: "kotlin-executor" },
     perl: { filename: "script.pl", executor: "perl-executor" },
     php: { filename: "script.php", executor: "php-executor" },
@@ -16,7 +16,7 @@ const languages = {
     ruby: { filename: "script.rb", executor: "ruby-executor" },
     rust: { filename: "main.rs", executor: "rust-executor" },
     swift: { filename: "main.swift", executor: "swift-executor" },
-    typescript: { filename: "script.ts", executor: "typescript-executor" }
+    typescript: { filename: "script.ts", executor: "jsts-executor" }
 };
 
 const executeCode = (language, code, stdin, res) => {
@@ -33,8 +33,8 @@ const executeCode = (language, code, stdin, res) => {
     }
 
     const command = stdin
-        ? `docker run --rm -i -e CODE=${encodedCode} -e INPUT=${encodedInput} ${langConfig.executor}`
-        : `docker run --rm -i -e CODE=${encodedCode} ${langConfig.executor}`;
+        ? `docker run --rm -i -e LANGUAGE=${language} -e CODE=${encodedCode} -e INPUT=${encodedInput} ${langConfig.executor}`
+        : `docker run --rm -i -e LANGUAGE=${language} -e CODE=${encodedCode} ${langConfig.executor}`;
 
     exec(command, (error, stdout, stderr) => {
         if (stderr) {
